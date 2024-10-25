@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishle: Cybersecurity Word Game</title>
+    
+    <!-- Example font imports from Google Fonts (replace with your font sources) -->
+    <link href="https://fonts.googleapis.com/css2?family=Jubilat:wght@400;700&family=Roboto:wght@400&display=swap" rel="stylesheet"> 
+
+    <style>
+        /* General styles */
+        body { font-family: 'Roboto', sans-serif; text-align: center; background-color: #ffffff; color: #082f49; } /* Use Halyard (or Roboto as placeholder) */
+        
+        /* Title font for H1 */
+        h1 { font-family: 'Jubilat', serif; color: #308c83; font-weight: bold; } /* Jubilat for H1 */
+
+        /* Game container */
+        .game-container { margin-top: 20px; }
+
+        /* Box styles */
+        .guess-box, .empty-box { display: flex; justify-content: center; margin: 5px; }
+        .letter { width: 40px; height: 40px; margin: 2px; display: flex; align-items: center; justify-content: center; border: 1px solid #082f49; border-radius: 5px; font-size: 1.5em; color: white; } /* Box outline dark gray */
+        .empty { border-color: #555; background-color: transparent; }
+        .correct { background-color: green; }
+        .misplaced { background-color: yellow; color: black; }
+        .incorrect { background-color: gray; }
+
+        /* Button styles */
+        .button { margin-top: 10px; padding: 10px 20px; background-color: #308c83; color: white; border: none; border-radius: 5px; cursor: pointer; }
+
+        /* Answer display styles */
+        .answer-display { font-size: 1.5em; font-weight: bold; color: #308c83; margin-top: 20px; }
+
+        /* Keyboard styles */
+        .keyboard { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; }
+        .key { width: 30px; height: 40px; margin: 5px; display: flex; align-items: center; justify-content: center; background-color: #308c83; color: white; border-radius: 5px; }
+        .key.used { opacity: 0.6; pointer-events: none; } /* Disable used keys */
+
+        /* New game button centered when visible */
+        #newGameButton { display: none; margin: 20px auto; text-align: center; }
+
+    </style>
+</head>
+<body>
+
+    <h1>PHISHLE</h1>
+
+    <div class="game-container">
+        <div id="answerDisplay" class="answer-display"></div> <!-- Display for correct answer and definition -->
+        <input type="text" id="guessInput" maxlength="5" placeholder="Enter 5-letter word" style="text-align:center;">
+        <button class="button" onclick="makeGuess()">Submit Guess</button> <!-- Submit guess button always visible -->
+        <div id="emptyBoxes"></div> <!-- Display for empty guess boxes -->
+        <button class="button" id="newGameButton" onclick="newGame()">New Game</button> <!-- New Game button centered when visible -->
+    </div>
+
+    <div id="guessContainer"></div>
+
+    <div class="keyboard" id="keyboard">
+        <!-- Keyboard will be dynamically generated here -->
+    </div>
+
+    <div class="hint" id="hint"></div>
+
+    <script>
+        const words = [
+            "ALERT", "BLOCK", "BREACH", "CACHE", "CLOUD", "CYBER", "EMAIL", "GUARD", "HACKS", "LOGIN", 
+            "PHISH", "RISKS", "SCAMS", "SPOOF", "THREAT", "TRAIN", "TRUST", "VIRUS", "PHARM", "LOCKS",
+            "TOKEN", "BADGE", "ADMIN", "AUDIT", "HTTPS" // Added new words
+        ]; // Updated word bank
+        let targetWord = "";
+        let attempts = 0;
+        const maxAttempts = 6;
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(''); // For the keyboard
+
+        // Start a new game
+        function newGame() {
+            targetWord = words[Math.floor(Math.random() * words.length)]; // Select random word
+            attempts = 0;
+            document.getElementById("guessContainer").innerHTML = ""; // Clear previous guesses
+            document.getElementById("emptyBoxes").innerHTML = ""; // Clear empty guess boxes
+            document.getElementById("hint").textContent = ""; // Clear hint
+            document.getElementById("guessInput").value = ""; // Clear input
+            document.getElementById("newGameButton").style.display = "none"; // Hide New Game button initially
+            document.getElementById("answerDisplay").textContent = ""; // Clear answer display
+            generateKeyboard(); // Generate the keyboard
+            createEmptyGuessBoxes(); // Create empty guess boxes
+            console.log("Target word:", targetWord); // For debugging or testing
+        }
+
+        // Generate empty guess boxes for max attempts (Top to bottom filling)
+        function createEmptyGuessBoxes() {
+            const emptyBoxContainer = document.getElementById("emptyBoxes");
+            for (let i = 0; i < maxAttempts; i++) {
+                const emptyRow = document.createElement("div");
+                emptyRow.classList.add("empty-box");
+                for (let j = 0; j < 5; j++) {
+                    const emptyBox = document.createElement("div");
+                    emptyBox.classList.add("letter", "empty");
+                    emptyRow.appendChild(emptyBox);
+                }
+                emptyBoxContainer.appendChild(emptyRow); // Add rows for each guess attempt
+            }
+        }
+
+        // Generate the on-screen keyboard
+        function generateKeyboard() {
+            const keyboardDiv = document.getElementById("keyboard");
+            keyboardDiv.innerHTML = ""; // Clear existing keys
+
+            alphabet.forEach(letter => {
+                const key = document.createElement("div");
+                key.classList.add("key");
+                key.setAttribute("id", `key-${letter}`);
+                key.textContent = letter;
+                keyboardDiv.appendChild(key);
+            });
+        }
+
+        // Handle user guess
+        function makeGuess() {
+            const guess = document.getElementById("guessInput").value.toUpperCase();
+            if (guess.length !== 5) {
+                alert("Please enter a 5-letter word.");
+                return;
+            }
+            attempts++;
+            displayGuessFeedback(guess);
+            document.getElementById("guessInput").value = ""; // Clear input after guess
+
+            if (guess === targetWord) {
+                displayAnswer(`Correct! The word was ${targetWord}.`, getDefinition(targetWord)); // Show answer above
+                document.getElementById("newGameButton").style.display = "block"; // Show New Game button
+            } else if (attempts === maxAttempts) {
+                displayAnswer(`Out of attempts! The word was ${targetWord}.`, getDefinition(targetWord)); // Show answer above after loss
+                document.getElementById("newGameButton").style.display = "block"; // Show New Game button after loss
+            }
+        }
+
+        // Function to display the correct word and definition above the guess boxes
+        function displayAnswer(message, definition) {
+            document.getElementById("answerDisplay").textContent = `${message} Definition: ${definition}`;
+        }
+
+        // Display feedback for each guess, correcting for multiple letter occurrences
+        function displayGuessFeedback(guess) {
+            const guessRow = document.getElementsByClassName("empty-box")[attempts - 1]; // Fill top-down
+
+            // Track the number of each letter in the target word
+            const letterCount = {};
+            for (let i = 0; i < targetWord.length; i++) {
+                const letter = targetWord[i];
+                letterCount[letter] = (letterCount[letter] || 0) + 1;
+            }
+
+            // First, mark all the correct letters
+            const feedback = Array(guess.length).fill("incorrect");
+
+            for (let i = 0; i < guess.length; i++) {
+                if (guess[i] === targetWord[i]) {
+                    feedback[i] = "correct";
+                    letterCount[guess[i]]--; // Use up one occurrence of this letter
+                    updateKeyboard(guess[i], "correct");
+                }
+            }
+
+            // Then, mark the misplaced letters
+            for (let i = 0; i < guess.length; i++) {
+                if (feedback[i] === "correct") continue; // Skip already marked letters
+                if (targetWord.includes(guess[i]) && letterCount[guess[i]] > 0) {
+                    feedback[i] = "misplaced";
+                    letterCount[guess[i]]--; // Use up one occurrence of this letter
+                    updateKeyboard(guess[i], "misplaced");
+                } else {
+                    updateKeyboard(guess[i], "incorrect");
+                }
+            }
+
+            // Render the feedback in the top-down row
+            for (let i = 0; i < guess.length; i++) {
+                guessRow.children[i].classList.add(feedback[i]);
+                guessRow.children[i].textContent = guess[i];
+            }
+        }
+
+        // Update keyboard to show the guessed letters
+        function updateKeyboard(letter, status) {
+            const key = document.getElementById(`key-${letter}`);
+            if (status === "correct") {
+                key.style.backgroundColor = "green";
+            } else if (status === "misplaced") {
+                key.style.backgroundColor = "yellow";
+                key.style.color = "black";
+            } else if (status === "incorrect") {
+                key.style.backgroundColor = "gray";
+            }
+            key.classList.add("used"); // Mark the key as used
+        }
+
+        // Simple dictionary for word definitions
+        function getDefinition(word) {
+            const definitions = {
+                "ALERT": "Alert: A warning message regarding a potential threat.",
+                "BLOCK": "Block: An action to stop access or communication.",
+                "BREACH": "Breach: Unauthorized access to a system or data.",
+                "CACHE": "Cache: Temporary storage of frequently accessed data.",
+                "CLOUD": "Cloud: Online storage and computing services.",
+                "CYBER": "Cyber: Related to the digital world, including security threats.",
+                "EMAIL": "Email: A method of communication often targeted in phishing attacks.",
+                "GUARD": "Guard: Protection or defense mechanism.",
+                "HACKS": "Hacks: Unauthorized access to systems or data.",
+                "LOGIN": "Login: Credentials used to access a system or account.",
+                "PHISH": "Phishing: Attempting to obtain sensitive info by disguising as a trustworthy entity.",
+                "RISKS": "Risks: The likelihood of a potential cybersecurity threat.",
+                "SCAMS": "Scams: Fraudulent schemes designed to steal data or money.",
+                "SPOOF": "Spoof: Faking a website, email, or IP to deceive users.",
+                "THREAT": "Threat: A potential danger to data or systems.",
+                "TRAIN": "Train: Educating individuals on cybersecurity best practices.",
+                "TRUST": "Trust: Confidence in the safety and reliability of a system or entity.",
+                "VIRUS": "Virus: Malicious software that replicates and spreads in a system.",
+                "PHARM": "Pharming: Redirecting users to a fake website to steal sensitive information.",
+                "LOCKS": "Locks: Physical or digital mechanisms that secure access.",
+                "TOKEN": "Token: A physical or digital key used to verify identity.",
+                "BADGE": "Badge: A physical or digital identifier used for access control.",
+                "ADMIN": "Admin: A user with the highest level of control over a system.",
+                "AUDIT": "Audit: A formal examination of security systems and controls.",
+                "HTTPS": "HTTPS: A secure version of HTTP used for encrypted communication."
+            };
+            return definitions[word] || "Definition not found.";
+        }
+
+        // Initialize game on page load
+        newGame();
+    </script>
+
+</body>
+</html>
