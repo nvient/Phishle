@@ -118,24 +118,31 @@
         }
 
         // Handle user guess
-        function makeGuess() {
-            const guess = document.getElementById("guessInput").value.toUpperCase();
-            if (guess.length !== 5) {
-                alert("Please enter a 5-letter word.");
-                return;
-            }
-            attempts++;
-            displayGuessFeedback(guess);
-            document.getElementById("guessInput").value = ""; // Clear input after guess
+function makeGuess() {
+    const guess = document.getElementById("guessInput").value.toUpperCase();
+    if (guess.length !== 5) {
+        alert("Please enter a 5-letter word.");
+        return;
+    }
+    attempts++;
+    displayGuessFeedback(guess);
+    document.getElementById("guessInput").value = ""; // Clear input after guess
 
-            if (guess === targetWord) {
-                displayAnswer(`Correct! The word was ${targetWord}.`, getDefinition(targetWord)); // Show answer above
-                document.getElementById("newGameButton").style.display = "block"; // Show New Game button
-            } else if (attempts === maxAttempts) {
-                displayAnswer(`Out of attempts! The word was ${targetWord}.`, getDefinition(targetWord)); // Show answer above after loss
-                document.getElementById("newGameButton").style.display = "block"; // Show New Game button after loss
-            }
-        }
+    if (guess === targetWord) {
+        // Custom success message in the new format
+        displayAnswer(`Congratulations! You've cracked it! The word was ${targetWord}: ${getDefinition(targetWord)}`);
+        document.getElementById("newGameButton").style.display = "block"; // Show New Game button
+    } else if (attempts === maxAttempts) {
+        // Custom failure message in the new format
+        displayAnswer(`Oops! You're out of attempts. The word was ${targetWord}: ${getDefinition(targetWord)}`);
+        document.getElementById("newGameButton").style.display = "block"; // Show New Game button after loss
+    }
+}
+
+// Function to display the final message with the answer and definition
+function displayAnswer(message) {
+    document.getElementById("answerDisplay").textContent = message;
+}
 
         // Function to display the correct word and definition above the guess boxes
         function displayAnswer(message, definition) {
