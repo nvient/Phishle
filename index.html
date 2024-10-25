@@ -116,8 +116,7 @@
                 keyboardDiv.appendChild(key);
             });
         }
-
-      // Handle user guess
+// Handle user guess
 function makeGuess() {
     const guess = document.getElementById("guessInput").value.toUpperCase();
     if (guess.length !== 5) {
@@ -129,12 +128,14 @@ function makeGuess() {
     document.getElementById("guessInput").value = ""; // Clear input after guess
 
     if (guess === targetWord) {
-        // Custom success message in the new format
-        displayAnswer(`Congratulations! You've cracked it! The word was ${targetWord}: ${getDefinition(targetWord)}`);
+        // Success message, concatenating the definition directly into the message
+        const message = `Congratulations! You've cracked it! The word was ${targetWord}: ${getDefinition(targetWord)}`;
+        displayAnswer(message);
         document.getElementById("newGameButton").style.display = "block"; // Show New Game button
     } else if (attempts === maxAttempts) {
-        // Custom failure message in the new format
-        displayAnswer(`Oops! You're out of attempts. The word was ${targetWord}: ${getDefinition(targetWord)}`);
+        // Failure message, concatenating the definition directly into the message
+        const message = `Oops! You're out of attempts. The word was ${targetWord}: ${getDefinition(targetWord)}`;
+        displayAnswer(message);
         document.getElementById("newGameButton").style.display = "block"; // Show New Game button after loss
     }
 }
@@ -144,7 +145,7 @@ function displayAnswer(message) {
     document.getElementById("answerDisplay").textContent = message;
 }
 
-        // Function to display the correct word and definition above the guess boxes
+              // Function to display the correct word and definition above the guess boxes
         function displayAnswer(message, definition) {
             document.getElementById("answerDisplay").textContent = `${message} Definition: ${definition}`;
         }
