@@ -22,9 +22,9 @@
         .guess-box, .empty-box { display: flex; justify-content: center; margin: 5px; }
         .letter { width: 40px; height: 40px; margin: 2px; display: flex; align-items: center; justify-content: center; border: 1px solid #082f49; border-radius: 5px; font-size: 1.5em; color: white; } /* Box outline dark gray */
         .empty { border-color: #555; background-color: transparent; }
-        .correct { background-color: green; }
-        .misplaced { background-color: yellow; color: black; }
-        .incorrect { background-color: gray; }
+        .correct { background-color: #308c83; } /* Correct letters in teal */
+        .misplaced { background-color: #c1ddd8; color: black; } /* Misplaced letters in light yellow */
+        .incorrect { background-color: #555; } /* Incorrect letters in dark gray */
 
         /* Button styles */
         .button { margin-top: 10px; padding: 10px 20px; background-color: #308c83; color: white; border: none; border-radius: 5px; cursor: pointer; }
@@ -34,8 +34,11 @@
 
         /* Keyboard styles */
         .keyboard { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; }
-        .key { width: 30px; height: 40px; margin: 5px; display: flex; align-items: center; justify-content: center; background-color: #308c83; color: white; border-radius: 5px; }
-        .key.used { opacity: 0.6; pointer-events: none; } /* Disable used keys */
+        .key { width: 30px; height: 40px; margin: 5px; display: flex; align-items: center; justify-content: center; background-color: lightgray; color: black; border-radius: 5px; }
+        .key.correct { background-color: #308c83; color: white; } /* Correct guess: Teal */
+        .key.misplaced { background-color: #c1ddd8; color: black; } /* Misplaced guess: Light yellow */
+        .key.incorrect { background-color: #555; color: white; } /* Incorrect guess: Dark gray */
+        .key.used { pointer-events: none; } /* Disable used keys */
 
         /* New game button centered when visible */
         #newGameButton { display: none; margin: 20px auto; text-align: center; }
@@ -116,38 +119,34 @@
                 keyboardDiv.appendChild(key);
             });
         }
-// Handle user guess
-function makeGuess() {
-    const guess = document.getElementById("guessInput").value.toUpperCase();
-    if (guess.length !== 5) {
-        alert("Please enter a 5-letter word.");
-        return;
-    }
-    attempts++;
-    displayGuessFeedback(guess);
-    document.getElementById("guessInput").value = ""; // Clear input after guess
 
-    if (guess === targetWord) {
-        // Success message, concatenating the definition directly into the message
-        const message = `Congratulations! You've cracked it! The word was ${targetWord}: ${getDefinition(targetWord)}`;
-        displayAnswer(message);
-        document.getElementById("newGameButton").style.display = "block"; // Show New Game button
-    } else if (attempts === maxAttempts) {
-        // Failure message, concatenating the definition directly into the message
-        const message = `Oops! You're out of attempts. The word was ${targetWord}: ${getDefinition(targetWord)}`;
-        displayAnswer(message);
-        document.getElementById("newGameButton").style.display = "block"; // Show New Game button after loss
-    }
-}
+        // Handle user guess
+        function makeGuess() {
+            const guess = document.getElementById("guessInput").value.toUpperCase();
+            if (guess.length !== 5) {
+                alert("Please enter a 5-letter word.");
+                return;
+            }
+            attempts++;
+            displayGuessFeedback(guess);
+            document.getElementById("guessInput").value = ""; // Clear input after guess
 
-// Function to display the final message with the answer and definition
-function displayAnswer(message) {
-    document.getElementById("answerDisplay").textContent = message;
-}
+            if (guess === targetWord) {
+                // Success message, concatenating the definition directly into the message
+                const message = `Congratulations! You've cracked it! The word was ${targetWord}: ${getDefinition(targetWord)}`;
+                displayAnswer(message);
+                document.getElementById("newGameButton").style.display = "block"; // Show New Game button
+            } else if (attempts === maxAttempts) {
+                // Failure message, concatenating the definition directly into the message
+                const message = `Oops! You're out of attempts. The word was ${targetWord}: ${getDefinition(targetWord)}`;
+                displayAnswer(message);
+                document.getElementById("newGameButton").style.display = "block"; // Show New Game button after loss
+            }
+        }
 
-              // Function to display the correct word and definition above the guess boxes
-        function displayAnswer(message, definition) {
-            document.getElementById("answerDisplay").textContent = `${message} Definition: ${definition}`;
+        // Function to display the final message with the answer and definition
+        function displayAnswer(message) {
+            document.getElementById("answerDisplay").textContent = message;
         }
 
         // Display feedback for each guess, correcting for multiple letter occurrences
@@ -195,12 +194,11 @@ function displayAnswer(message) {
         function updateKeyboard(letter, status) {
             const key = document.getElementById(`key-${letter}`);
             if (status === "correct") {
-                key.style.backgroundColor = "green";
+                key.classList.add("correct");
             } else if (status === "misplaced") {
-                key.style.backgroundColor = "yellow";
-                key.style.color = "black";
+                key.classList.add("misplaced");
             } else if (status === "incorrect") {
-                key.style.backgroundColor = "gray";
+                key.classList.add("incorrect");
             }
             key.classList.add("used"); // Mark the key as used
         }
