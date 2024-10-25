@@ -64,7 +64,7 @@
 
     <script>
         const words = [
-            "ALERT", "BLOCK", "BREACH", "CACHE", "CLOUD", "CYBER", "EMAIL", "GUARD", "HACKS", "LOGIN", 
+            "ALERT", "BLOCK", "CACHE", "CLOUD", "CYBER", "EMAIL", "GUARD", "HACKS", "LOGIN", 
             "PHISH", "RISKS", "SCAMS", "SPOOF", "THREAT", "TRAIN", "TRUST", "VIRUS", "PHARM", "LOCKS",
             "TOKEN", "BADGE", "ADMIN", "AUDIT", "HTTPS" // Added new words
         ]; // Updated word bank
@@ -207,31 +207,30 @@ function displayAnswer(message) {
         // Simple dictionary for word definitions
         function getDefinition(word) {
             const definitions = {
-                "ALERT": "Alert: A warning message regarding a potential threat.",
-                "BLOCK": "Block: An action to stop access or communication.",
-                "BREACH": "Breach: Unauthorized access to a system or data.",
-                "CACHE": "Cache: Temporary storage of frequently accessed data.",
-                "CLOUD": "Cloud: Online storage and computing services.",
-                "CYBER": "Cyber: Related to the digital world, including security threats.",
-                "EMAIL": "Email: A method of communication often targeted in phishing attacks.",
-                "GUARD": "Guard: Protection or defense mechanism.",
-                "HACKS": "Hacks: Unauthorized access to systems or data.",
-                "LOGIN": "Login: Credentials used to access a system or account.",
-                "PHISH": "Phishing: Attempting to obtain sensitive info by disguising as a trustworthy entity.",
-                "RISKS": "Risks: The likelihood of a potential cybersecurity threat.",
-                "SCAMS": "Scams: Fraudulent schemes designed to steal data or money.",
-                "SPOOF": "Spoof: Faking a website, email, or IP to deceive users.",
-                "THREAT": "Threat: A potential danger to data or systems.",
-                "TRAIN": "Train: Educating individuals on cybersecurity best practices.",
-                "TRUST": "Trust: Confidence in the safety and reliability of a system or entity.",
-                "VIRUS": "Virus: Malicious software that replicates and spreads in a system.",
-                "PHARM": "Pharming: Redirecting users to a fake website to steal sensitive information.",
-                "LOCKS": "Locks: Physical or digital mechanisms that secure access.",
-                "TOKEN": "Token: A physical or digital key used to verify identity.",
-                "BADGE": "Badge: A physical or digital identifier used for access control.",
-                "ADMIN": "Admin: A user with the highest level of control over a system.",
-                "AUDIT": "Audit: A formal examination of security systems and controls.",
-                "HTTPS": "HTTPS: A secure version of HTTP used for encrypted communication."
+                "ALERT": "A warning message regarding a potential threat.",
+                "BLOCK": "An action to stop access or communication.",
+                "CACHE": "Temporary storage of frequently accessed data.",
+                "CLOUD": "Online storage and computing services.",
+                "CYBER": "Related to the digital world, including security threats.",
+                "EMAIL": "A method of communication often targeted in phishing attacks.",
+                "GUARD": "Protection or defense mechanism.",
+                "HACKS": "Unauthorized access to systems or data.",
+                "LOGIN": "Credentials used to access a system or account.",
+                "PHISH": "Attempting to obtain sensitive info by disguising as a trustworthy entity.",
+                "RISKS": "The likelihood of a potential cybersecurity threat.",
+                "SCAMS": "Fraudulent schemes designed to steal data or money.",
+                "SPOOF": "Faking a website, email, or IP to deceive users.",
+                "THREAT": "A potential danger to data or systems.",
+                "TRAIN": "Educating individuals on cybersecurity best practices.",
+                "TRUST": "Confidence in the safety and reliability of a system or entity.",
+                "VIRUS": "Malicious software that replicates and spreads in a system.",
+                "PHARM": "Redirecting users to a fake website to steal sensitive information.",
+                "LOCKS": "Physical or digital mechanisms that secure access.",
+                "TOKEN": "A physical or digital key used to verify identity.",
+                "BADGE": "A physical or digital identifier used for access control.",
+                "ADMIN": "A user with the highest level of control over a system.",
+                "AUDIT": "A formal examination of security systems and controls.",
+                "HTTPS": "A secure version of HTTP used for encrypted communication."
             };
             return definitions[word] || "Definition not found.";
         }
